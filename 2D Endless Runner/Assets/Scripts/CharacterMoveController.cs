@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -14,6 +15,18 @@ public class CharacterMoveController : MonoBehaviour
     [Header("Grond Raycast")]
     public float groundRaycastDistance;
     public LayerMask groundLayerMask;
+
+    [Header("Scoring")]
+    public ScoreController score;
+    public float scoringRatio;
+    private float lastPositionX;
+
+    [Header("GameOver")]
+    public GameObject gameOverScreen;
+    public float FallPositionY;
+
+    [Header("Camera")]
+    public CameraMoveController gameCamera;
 
     private bool isJumping;
     private bool isOnGround;
@@ -46,6 +59,37 @@ public class CharacterMoveController : MonoBehaviour
         }
         // change animation
         anim.SetBool("isOnGround", isOnGround);
+
+        // calculate score
+        int distancePassed = Mathf.FloorToInt(transform.position.x - lastPositionX);
+        int scoreIncrement = Mathf.FloorToInt(distancePassed / scoringRatio);
+
+        if (scoreIncrement > 0)
+        {
+            score.IncreaseCurrentScore(scoreIncrement);
+            lastPositionX += distancePassed;
+        }
+
+        // game over
+        if(transform.position.y < FallPositionY)
+        {
+            GameOver();
+        }
+    }
+
+    private void GameOver()
+    {
+        // set high score
+        score.FinishScoring();
+
+        // stop camera movement
+        gameCamera.enabled = false;
+
+        // show game over
+        gameOverScreen.SetActive(true);
+
+        // disable this too
+        this.enabled = false;
     }
 
     private void FixedUpdate()

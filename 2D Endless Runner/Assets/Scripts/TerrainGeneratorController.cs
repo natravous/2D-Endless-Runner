@@ -37,7 +37,7 @@ public class TerrainGeneratorController : MonoBehaviour
         spawnedTerrain = new List<GameObject>();
 
         lastGeneratedPositionX = GetHorizontalPositionStart();
-        lastRemovedPositionX = lastRemovedPositionX - terrainTemplateWidth;
+        lastRemovedPositionX = lastGeneratedPositionX - terrainTemplateWidth;
 
         foreach(TerrainTemplateController terrain in earlyTerrainTemplates)
         {
@@ -122,7 +122,8 @@ public class TerrainGeneratorController : MonoBehaviour
         if (terrainToRemove != null)
         {
             spawnedTerrain.Remove(terrainToRemove);
-            DestroyObject(terrainToRemove);
+            Destroy(terrainToRemove);
+            //ReturnToPool(terrainToRemove);
         }
     }
 
@@ -155,6 +156,6 @@ public class TerrainGeneratorController : MonoBehaviour
         areaEndPosition.x = GetHorizontalPositionEnd();
 
         Debug.DrawLine(areaStartPosition + Vector3.up * debugLineHeight / 2, areaStartPosition + Vector3.down * debugLineHeight / 2, Color.red);
-        Debug.DrawLine(areaEndPosition + Vector3.up * debugLineHeight / 2, areaEndPosition + Vector3.down * debugLineHeight / 2, Color.red);
+        Debug.DrawLine(areaEndPosition + Vector3.up * debugLineHeight / 2, areaEndPosition + Vector3.down * debugLineHeight / 2, Color.blue);
     }
 }
